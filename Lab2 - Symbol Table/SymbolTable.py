@@ -47,7 +47,7 @@ class SymbolTable:
                 for j in range(len(self._elems[bucket_index])):
                     if self._elems[bucket_index][j] == key:
                         return bucket_index, j
-        return bucket_index, -1
+        return -1, -1
 
     def __str__(self):
         string = ""
