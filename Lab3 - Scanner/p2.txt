@@ -1,0 +1,12 @@
+begin:
+	number a;
+	number div;
+
+	in a;
+
+	for div<-1,a,1:
+		if div mod a = 0:
+			out div;
+		end_if
+	end_for
+end

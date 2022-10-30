@@ -1,0 +1,8 @@
+
+Identifiers Symbol Table
+2 -> ['c', 'min']
+4 -> ['a']
+7 -> ['b']
+
+Constants Symbol Table
+9 -> ['"Hello"']
