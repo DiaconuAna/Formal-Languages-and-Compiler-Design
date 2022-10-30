@@ -32,7 +32,8 @@ class Scanner:
 
     def writeToFile(self):
         with open('PIF.out', 'w') as file:
-            file.write(str(self._programInternalForm))
+            for element in self._programInternalForm:
+                file.write(str(element)+'\n')
         with open('ST.out', 'w') as file:
             file.write("\nIdentifiers Symbol Table\n")
             file.write(str(self._identifiersSymbolTable))
@@ -63,6 +64,7 @@ class Scanner:
                         self._constantsSymbolTable.add(token)
                         self._programInternalForm.append(('ct', self._constantsSymbolTable.getPos(token)[0]))
         self.writeToFile()
+        print("Lexically corect")
 
     def tokenizeLine(self, line_string):
         self._lineCount += 1
@@ -98,7 +100,7 @@ class Scanner:
                         final_line_tokens.append(tmp_token)
                         i += 2
                     else:
-                        raise ValueError("Invalid token {} on line {}".format(
+                        raise ValueError("Lexical error: Invalid token {} on line {}".format(
                             line_elements[i] + line_elements[i + 1] + line_elements[i + 2], self._lineCount))
                 # else:
                 #     raise ValueError(

@@ -1,8 +1,8 @@
 
 Identifiers Symbol Table
-2 -> ['c', 'min']
-4 -> ['a']
-7 -> ['b']
+4 -> ['c']
+9 -> ['min']
+11 -> ['a', 'b']
 
 Constants Symbol Table
-9 -> ['"Hello"']
+8 -> ['"Hello"']
