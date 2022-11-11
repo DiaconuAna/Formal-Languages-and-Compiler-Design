@@ -1,0 +1,20 @@
+FA.in in BNF
+
+<newline> ::= `\n`.
+<FA> ::= <states_set><newline><alphabet><newline><initial_state><newline><final_states><newline><transitions>.
+
+<state> ::= `A`|`B`|...|`Z`|`a`|`b`|...|`z`.
+<states> ::= <state>|<state> ` ` <states>.
+<states_set> ::= `Q = `<states_set>.
+
+<alphabet_symbol> ::= `A`|`B`|...|`Z`|`a`|`b`|...|`z`|`0`|`1`|...|`9`.
+<alphabet_set> ::= <alphabet_symbol>|<alphabet_symbol><alphabet_set>.
+<alphabet> ::= `S = ` <alphabet_set>.
+
+<initial_state> ::= `q0 = ` <state>.
+
+<final_states> ::= `F = ` <states_set>.
+
+<transition> ::= `(` <state> `,` <alphabet_symbol> `->` <state>.
+<transition_set> ::= <transition><newline>|<transition><newline><transition_set>.
+<transitions> ::= `T=` <newline> <transitions_set>.
