@@ -25,7 +25,6 @@ def fileRead(file_name="FA.in"):
         S = S_line.strip().split(' ')[2:]
         q0_line = file.readline()  # q0 = A
         q0 = q0_line.strip().split(' ')[2]
-        # print("q0 = {}".format(q0))
         F_line = file.readline()
         F = F_line.strip().split(' ')[2:]
 
