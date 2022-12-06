@@ -18,7 +18,31 @@ class Parser:
         self._working_stack = []
         self._input_stack = [self._grammar.getStartingSymbol()]
         self._state = "q"
-        self._index = 0
+        self._index = 1
+
+    def getState(self):
+        return self._state
+
+    def setState(self, value):
+        self._state = value
+
+    def getIndex(self):
+        return self._index
+
+    def setIndex(self, value):
+        self._index=value
+
+    def getWorkingStack(self):
+        return self._working_stack
+
+    def setWorkingStack(self, stack):
+        self._working_stack = stack
+
+    def getInputStack(self):
+        return self._input_stack
+
+    def setInputStack(self, stack):
+        self._input_stack = stack
 
     def expand(self):
         """
@@ -36,11 +60,10 @@ class Parser:
         4. Add the corresponding production to the input stack beta
         :return:
         """
-        logging.log("expand")
         nonTerminal = self._input_stack.pop(0)  # step 1
         self._working_stack.append((nonTerminal, 0))  # step 2
-        production = self._grammar.getProduction(nonTerminal)[0]  # step 3
-        self._input_stack = production + self._input_stack  # step 4
+        production = self._grammar.getProductions(nonTerminal[0])[0]  # step 3
+        self._input_stack = list(production[0]) + self._input_stack  # step 4
 
     def advance(self):
         """
@@ -54,8 +77,7 @@ class Parser:
         3. increase index i
         :return:
         """
-        logging.log("advance")
-        nonTerminal = self._input_stack.pop(0)  # step 1
+        nonTerminal = self._input_stack.pop(0)
         self._working_stack.append(nonTerminal)  # step 2
         self._index += 1  # step 3
 
@@ -69,7 +91,6 @@ class Parser:
         1.State becomes back.
         :return:
         """
-        logging.log(msg="momentary insuccess")
         self._state = "b"  # step 1
 
     def back(self):
@@ -84,7 +105,6 @@ class Parser:
         3. decrease index
         :return:
         """
-        logging.log("back")
         last = self._working_stack.pop()  # step 1
         self._input_stack = [last] + self._input_stack  # step 2
         self._index -= 1  # step 3
@@ -113,7 +133,6 @@ class Parser:
 
         :return:
         """
-        logging.log("another try")
 
         last = self._working_stack.pop()  # step 1
         # step 2
@@ -122,7 +141,7 @@ class Parser:
             self._working_stack.append((last[0], last[1] + 1))  # step 2.2
             lastLength = len(self._grammar.getProduction(last[0], last[1]))  # step 2.3
             self._input_stack = self._input_stack[lastLength:]  # step 2.4
-            self._input_stack = [self._grammar.getProduction(last[0], last[1] + 1)[0]] + self._input_stack  # step 2.5
+            self._input_stack = list(self._grammar.getProduction(last[0], last[1] + 1)[0]) + self._input_stack  # step 2.5
         elif self._index == 1 and last[0] == self._grammar.getStartingSymbol:  # step 3
             self._state = "e"
         else:  # step 4
@@ -139,5 +158,4 @@ class Parser:
         1. Mark the state as final
         :return:
         """
-        logging.log("success")
         self._state = "f"  # step 1

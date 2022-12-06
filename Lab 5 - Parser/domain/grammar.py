@@ -5,6 +5,22 @@ class Grammar:
         self._P = {}
         self._S = []
 
+    def getStartingSymbol(self):
+        return self._S
+
+    def getProductions(self, symbol):
+        return self._P[symbol]
+
+    def existsNextProduction(self, symbol, prodNr):
+        if self._P[symbol][-1][1] == prodNr:
+            return False
+        return True
+
+    def getProduction(self, symbol, prodNr):
+        for p in self._P[symbol]:
+            if p[1] == prodNr:
+                return p
+
     def readFromFile(self, filename):
         """
         Reads a grammar from a file
