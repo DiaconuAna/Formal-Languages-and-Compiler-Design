@@ -37,7 +37,7 @@ class Parser:
         return self._index
 
     def setIndex(self, value):
-        self._index=value
+        self._index = value
 
     def getWorkingStack(self):
         return self._working_stack
@@ -65,8 +65,11 @@ class Parser:
         :param w: sequence to be parsed
         :return:
         """
-        while self._state!= 'f' and self._state != 'e':
+        w = w.split(' ')
+        while self._state != 'f' and self._state != 'e':
             self.printCurrentConfiguration()
+            if self._index < len(w):
+                print("&&&&", w[self._index])
             if self._state == 'q':
                 # print("*********** {}".format(w[self._index-1]))
                 # if i = n+1 and input stack is empty => success
@@ -114,9 +117,14 @@ class Parser:
         """
         print('>>> expand ')
         nonTerminal = self._input_stack.pop(0)  # step 1
-        production = self._grammar.getProductions(nonTerminal[0])[0]  # step 3
+        print("????", nonTerminal)
+        # production = self._grammar.getProductions(nonTerminal[0])[0]  # step 3
+        production = self._grammar.getProductions(nonTerminal)[0]  # step 3
+        print('*****', production)
         self._working_stack.append((nonTerminal, production[1]))  # step 2
-        self._input_stack = list(production[0]) + self._input_stack  # step 4
+        production_elems = production[0].split('$')
+        # self._input_stack = list(production[0]) + self._input_stack  # step 4
+        self._input_stack = production_elems + self._input_stack  # step 4
 
     def advance(self):
         """
@@ -197,7 +205,9 @@ class Parser:
             self._working_stack.append((last[0], last[1] + 1))  # step 2.2
             lastLength = len(self._grammar.getProduction(last[0], last[1]))  # step 2.3
             self._input_stack = self._input_stack[lastLength:]  # step 2.4
-            self._input_stack = list(self._grammar.getProduction(last[0], last[1] + 1)[0]) + self._input_stack  # step 2.5
+            production_elems = self._grammar.getProduction(last[0], last[1] + 1)[0]
+            # self._input_stack = list(self._grammar.getProduction(last[0], last[1] + 1)[0]) + self._input_stack  # step 2.5
+            self._input_stack = production_elems.split('$') + self._input_stack  # step 2.5
         elif self._index == 0 and last[0] == self._grammar.getStartingSymbol():  # step 3
             self._state = "e"
         else:  # step 4
@@ -243,7 +253,10 @@ class Parser:
                 father = index
 
                 # Get the length of the used production
-                prodLen = len(self._grammar.getProduction(self._working_stack[index][0], self._working_stack[index][1])[0])
+                # prodLen = len(self._grammar.getProduction(self._working_stack[index][0], self._working_stack[index][1])[0])
+                prodLen = len(
+                    self._grammar.getProduction(self._working_stack[index][0], self._working_stack[index][1])[0].split(
+                        '$'))
                 indexList = []
 
                 # Store the indexes in a list
@@ -261,6 +274,8 @@ class Parser:
                         # For every index remained in indexList add the offset to get the right index position
                         for j in range(i + 1, prodLen):
                             indexList[j] += offset
+                            if indexList[j] == len(self._tree):
+                                indexList[j] -= 1
 
                 # Update the left sibling relation
                 # For every index in indexList, except last because it will not be a left sibling to anyone
@@ -279,7 +294,10 @@ class Parser:
 
     def get_length_depth(self, index):
         # Get the length of the used production
-        prodLen = len(self._grammar.getProduction(self._working_stack[index][0], self._working_stack[index][1])[0])
+
+        prodLen = len(
+            self._grammar.getProduction(self._working_stack[index][0], self._working_stack[index][1])[0].split('$'))
+        # prodLen = len(self._grammar.getProduction(self._working_stack[index][0], self._working_stack[index][1])[0])
         sum = prodLen
         for i in range(1, prodLen + 1):
             if type(self._working_stack[index + i]) == tuple:
