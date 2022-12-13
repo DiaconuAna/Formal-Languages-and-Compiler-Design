@@ -5,6 +5,12 @@ class Grammar:
         self._P = {}
         self._S = []
 
+    def getTerminals(self):
+        return self._E
+
+    def getNonTerminals(self):
+        return self._N
+
     def getStartingSymbol(self):
         return self._S
 
@@ -19,6 +25,7 @@ class Grammar:
     def getProduction(self, symbol, prodNr):
         for p in self._P[symbol]:
             if p[1] == prodNr:
+                # return p[0]
                 return p
 
     def readFromFile(self, filename):

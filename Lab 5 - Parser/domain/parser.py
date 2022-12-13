@@ -1,5 +1,8 @@
 import logging
 
+from domain.item import Item
+from domain.parserOutput import ParserOutput
+
 
 class Parser:
     def __init__(self, grammar):
@@ -18,7 +21,11 @@ class Parser:
         self._working_stack = []
         self._input_stack = [self._grammar.getStartingSymbol()]
         self._state = "q"
-        self._index = 1
+        self._index = 0
+        self._tree = []
+
+    def getTree(self):
+        return self._tree
 
     def getState(self):
         return self._state
@@ -44,6 +51,51 @@ class Parser:
     def setInputStack(self, stack):
         self._input_stack = stack
 
+    def printCurrentConfiguration(self):
+        print('**************')
+        print('State: {}\n'.format(self._state))
+        print('Index: {}\n'.format(self._index))
+        print('Working stack: {}\n'.format(self._working_stack))
+        print('Input stack: {}\n'.format(self._input_stack))
+        print('**************')
+
+    def parsingStrategy(self, w):
+        """
+        Parse a sequence using descendent recursive parsing
+        :param w: sequence to be parsed
+        :return:
+        """
+        while self._state!= 'f' and self._state != 'e':
+            self.printCurrentConfiguration()
+            if self._state == 'q':
+                # print("*********** {}".format(w[self._index-1]))
+                # if i = n+1 and input stack is empty => success
+                if self._index == len(w) and len(self._input_stack) == 0:
+                    self.success()
+                # empty input stack and end of the sequence not reached => momentary insuccess
+                elif len(self._input_stack) == 0:
+                    self.momentaryInsuccess()
+                # else if head(input stack) is a non-terminal => expand
+                elif self._input_stack[0] in self._grammar.getNonTerminals():
+                    self.expand()
+                # else if head of the input stack = current element in the sequence => advance
+                elif self._index < len(w) and self._input_stack[0] == w[self._index]:
+                    self.advance()
+                else:
+                    self.momentaryInsuccess()
+            elif self._state == 'b':
+                # if head(working stack) == a - terminal
+                if self._working_stack[-1] in self._grammar.getTerminals():
+                    self.back()
+                else:
+                    self.anotherTry()
+        if self._state == 'e':
+            print('Error at index {}!'.format(self._index))
+        else:
+            print('Sequence {} is accepted!'.format(w))
+            print(self._working_stack)
+        self.createParsingTree()
+
     def expand(self):
         """
         Occurs when the head of the stack is a non-terminal
@@ -60,9 +112,10 @@ class Parser:
         4. Add the corresponding production to the input stack beta
         :return:
         """
+        print('>>> expand ')
         nonTerminal = self._input_stack.pop(0)  # step 1
-        self._working_stack.append((nonTerminal, 0))  # step 2
         production = self._grammar.getProductions(nonTerminal[0])[0]  # step 3
+        self._working_stack.append((nonTerminal, production[1]))  # step 2
         self._input_stack = list(production[0]) + self._input_stack  # step 4
 
     def advance(self):
@@ -77,6 +130,7 @@ class Parser:
         3. increase index i
         :return:
         """
+        print('>>> advance')
         nonTerminal = self._input_stack.pop(0)
         self._working_stack.append(nonTerminal)  # step 2
         self._index += 1  # step 3
@@ -91,6 +145,7 @@ class Parser:
         1.State becomes back.
         :return:
         """
+        print('>>> momentary insuccess')
         self._state = "b"  # step 1
 
     def back(self):
@@ -105,6 +160,7 @@ class Parser:
         3. decrease index
         :return:
         """
+        print('>>> back')
         last = self._working_stack.pop()  # step 1
         self._input_stack = [last] + self._input_stack  # step 2
         self._index -= 1  # step 3
@@ -133,7 +189,7 @@ class Parser:
 
         :return:
         """
-
+        print('>>> another try')
         last = self._working_stack.pop()  # step 1
         # step 2
         if self._grammar.existsNextProduction(last[0], last[1]):
@@ -142,7 +198,7 @@ class Parser:
             lastLength = len(self._grammar.getProduction(last[0], last[1]))  # step 2.3
             self._input_stack = self._input_stack[lastLength:]  # step 2.4
             self._input_stack = list(self._grammar.getProduction(last[0], last[1] + 1)[0]) + self._input_stack  # step 2.5
-        elif self._index == 1 and last[0] == self._grammar.getStartingSymbol:  # step 3
+        elif self._index == 0 and last[0] == self._grammar.getStartingSymbol():  # step 3
             self._state = "e"
         else:  # step 4
             lastLength = len(self._grammar.getProduction(last[0], last[1]))
@@ -158,4 +214,74 @@ class Parser:
         1. Mark the state as final
         :return:
         """
+        print('>>> success')
         self._state = "f"  # step 1
+
+    def createParsingTree(self):
+        father = -1
+
+        # For every elem in working stack
+        for index in range(0, len(self._working_stack)):
+            # If elem is a tuple -> (non-terminal, production number)
+            if type(self._working_stack[index]) == tuple:
+                # Add new entry in table and set the value along with production number used
+                self._tree.append(Item(self._working_stack[index][0]))  # value
+                self._tree[index].production = self._working_stack[index][1]
+            else:
+                # Else elem is a terminal -> add new entry in table and set the value
+                self._tree.append(Item(self._working_stack[index]))
+
+        # Update father - sibling relationship
+        # For every elem in working stack
+        for index in range(0, len(self._working_stack)):
+            # If elem is a tuple -> (non-terminal, production number)
+            if type(self._working_stack[index]) == tuple:
+                # Set the father and update it
+
+                if self._tree[index].father == -1:
+                    self._tree[index].father = father
+                father = index
+
+                # Get the length of the used production
+                prodLen = len(self._grammar.getProduction(self._working_stack[index][0], self._working_stack[index][1])[0])
+                indexList = []
+
+                # Store the indexes in a list
+                for i in range(1, prodLen + 1):
+                    indexList.append(index + i)
+
+                # Compute the right indexes where the elements from the production used are
+                # For every index in indexList
+                for i in range(0, prodLen):
+                    # If in the tree at position indexList[i] is a non-terminal
+                    if self._tree[indexList[i]].production != -1:
+                        # Compute the offset to update the indexes
+                        offset = self.get_length_depth(indexList[i])
+
+                        # For every index remained in indexList add the offset to get the right index position
+                        for j in range(i + 1, prodLen):
+                            indexList[j] += offset
+
+                # Update the left sibling relation
+                # For every index in indexList, except last because it will not be a left sibling to anyone
+                for i in range(0, prodLen - 1):
+                    #   Now that we computed the right indexes we can surely say that the item in the tree at position
+                    # indexList[i] will be a left sibling to item at pos indexList[i+1]
+                    self._tree[indexList[i]].sibling = indexList[i + 1]
+                    if self._tree[indexList[i]].father == -1:
+                        self._tree[indexList[i]].father = father
+                    if i == prodLen - 2 and self._tree[indexList[i + 1]].father == -1:
+                        self._tree[indexList[i + 1]].father = father
+            else:
+                if self._tree[index].father == -1:
+                    self._tree[index].father = father
+                father = -1
+
+    def get_length_depth(self, index):
+        # Get the length of the used production
+        prodLen = len(self._grammar.getProduction(self._working_stack[index][0], self._working_stack[index][1])[0])
+        sum = prodLen
+        for i in range(1, prodLen + 1):
+            if type(self._working_stack[index + i]) == tuple:
+                sum += self.get_length_depth(index + i)
+        return sum

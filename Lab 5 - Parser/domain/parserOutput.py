@@ -1,0 +1,15 @@
+from tabulate import tabulate
+
+
+class ParserOutput:
+    def __init__(self, tree):
+        self._tree = tree
+
+    def printTree(self):
+        headers = ['Index', 'Value', 'Parent', 'Left Sibling']
+        rows = []
+        index = 0
+        for item in self._tree:
+            rows.append([index, item.value, item.father, item.sibling])
+            index += 1
+        print(tabulate(rows, headers, tablefmt='orgtbl'))
