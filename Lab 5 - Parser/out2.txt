@@ -1,0 +1,101 @@
+
+--------------
+State: q Index: 0
+Working stack: []
+Input stack: ['program']
+expand
+
+--------------
+State: q Index: 0
+Working stack: [('program', 44)]
+Input stack: ['begin', ':', 'statementlist', 'end']
+advance
+
+--------------
+State: q Index: 1
+Working stack: [('program', 44), 'begin']
+Input stack: [':', 'statementlist', 'end']
+advance
+
+--------------
+State: q Index: 2
+Working stack: [('program', 44), 'begin', ':']
+Input stack: ['statementlist', 'end']
+expand
+
+--------------
+State: q Index: 2
+Working stack: [('program', 44), 'begin', ':', ('statementlist', 42)]
+Input stack: ['statement', 'end']
+expand
+
+--------------
+State: q Index: 2
+Working stack: [('program', 44), 'begin', ':', ('statementlist', 42), ('statement', 38)]
+Input stack: ['simplestatement', 'end']
+expand
+
+--------------
+State: q Index: 2
+Working stack: [('program', 44), 'begin', ':', ('statementlist', 42), ('statement', 38), ('simplestatement', 35)]
+Input stack: ['declaration', 'end']
+expand
+
+--------------
+State: q Index: 2
+Working stack: [('program', 44), 'begin', ':', ('statementlist', 42), ('statement', 38), ('simplestatement', 35), ('declaration', 10)]
+Input stack: ['type', 'id', ';', 'end']
+expand
+
+--------------
+State: q Index: 2
+Working stack: [('program', 44), 'begin', ':', ('statementlist', 42), ('statement', 38), ('simplestatement', 35), ('declaration', 10), ('type', 8)]
+Input stack: ['simpletype', 'id', ';', 'end']
+expand
+
+--------------
+State: q Index: 2
+Working stack: [('program', 44), 'begin', ':', ('statementlist', 42), ('statement', 38), ('simplestatement', 35), ('declaration', 10), ('type', 8), ('simpletype', 1)]
+Input stack: ['number', 'id', ';', 'end']
+advance
+
+--------------
+State: q Index: 3
+Working stack: [('program', 44), 'begin', ':', ('statementlist', 42), ('statement', 38), ('simplestatement', 35), ('declaration', 10), ('type', 8), ('simpletype', 1), 'number']
+Input stack: ['id', ';', 'end']
+advance
+
+--------------
+State: q Index: 4
+Working stack: [('program', 44), 'begin', ':', ('statementlist', 42), ('statement', 38), ('simplestatement', 35), ('declaration', 10), ('type', 8), ('simpletype', 1), 'number', 'id']
+Input stack: [';', 'end']
+advance
+
+--------------
+State: q Index: 5
+Working stack: [('program', 44), 'begin', ':', ('statementlist', 42), ('statement', 38), ('simplestatement', 35), ('declaration', 10), ('type', 8), ('simpletype', 1), 'number', 'id', ';']
+Input stack: ['end']
+advance
+
+--------------
+State: q Index: 6
+Working stack: [('program', 44), 'begin', ':', ('statementlist', 42), ('statement', 38), ('simplestatement', 35), ('declaration', 10), ('type', 8), ('simpletype', 1), 'number', 'id', ';', 'end']
+Input stack: []
+success
+Sequence [('program', 44), 'begin', ':', ('statementlist', 42), ('statement', 38), ('simplestatement', 35), ('declaration', 10), ('type', 8), ('simpletype', 1), 'number', 'id', ';', 'end'] is accepted!
+
+|   Index | Value           |   Parent |   Left Sibling |
+|---------+-----------------+----------+----------------|
+|       0 | program         |       -1 |             -1 |
+|       1 | begin           |        0 |              2 |
+|       2 | :               |        0 |              3 |
+|       3 | statementlist   |        0 |             12 |
+|       4 | statement       |        3 |             -1 |
+|       5 | simplestatement |        4 |             -1 |
+|       6 | declaration     |        5 |             -1 |
+|       7 | type            |        6 |             10 |
+|       8 | simpletype      |        7 |             -1 |
+|       9 | number          |        8 |             -1 |
+|      10 | id              |        6 |             11 |
+|      11 | ;               |        6 |             -1 |
+|      12 | end             |        0 |             -1 |

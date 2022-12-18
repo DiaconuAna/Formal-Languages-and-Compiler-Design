@@ -63,4 +63,40 @@ class Tests:
         self.test_back()
         self.test_anotherTry()
 
+"""
+  def run(self, w):
+        while (self.state != 'f') and (self.state != 'e'):
+            self.write_all_data()
+            if self.state == 'q':
+                if len(self.input_stack) == 0 and self.index == len(w):
+                    self.success()
+                elif len(self.input_stack) == 0:
+                    self.momentary_insuccess()
+                elif self.input_stack[0] in self.grammar.get_non_terminals():
+                    self.expand()
+                    # WHEN: head of input stack is a non terminal
+
+                elif self.index < len(w) and self.input_stack[0] == w[self.index]:
+                    self.advance()
+                else:
+                    # WHEN: head of input stack is a terminal ≠ current symbol from input
+                    self.momentary_insuccess()
+
+            elif self.state == 'b':
+                if self.working_stack[-1] in self.grammar.get_terminals():
+                    self.back()
+                else:
+                    self.another_try()
+
+        if self.state == 'e':
+            message = "ERROR! @ index: {}".format(self.index)
+        else:
+            message = "Sequence is accepted!"
+            self.print_working()
+        print(message)
+        self.write_in_output_file(message, True)
+        self.create_parsing_tree()
+        self.parserOutput.write_parsing_tree()
+"""
+
 

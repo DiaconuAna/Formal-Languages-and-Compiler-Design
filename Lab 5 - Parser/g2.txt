@@ -1,23 +1,23 @@
 N = simpletype, arraydeclaration, type, declaration, assignmentstmt, expression,term, factor, constant, iostmt, condition, relation, ifstmt, whilestmt,forstmt, simplestatement, statement, statementlist, program
-E = number, character, string, [,],=,<>, <=, >=, and, or, begin, end, :, ;, :, +, *, /, -, <-, (, ), in, out, if, while, for, end_if, end_while, end_for, ,
+E = out, id, number, character, string, [,],=,<>, <=, >=, and, or, begin, end, :, ;, :, +, *, /, -, <-, (, ), in, out, if, while, for, end_if, end_while, end_for, ,
 S = program
 P =
 simpletype ->  number|character|string
-arraydeclaration -> simpletype [ intconst ]
+arraydeclaration -> simpletype$[$intconst$]
+iostmt -> in$id$; | out$id$;|out$constant$;
 type -> simpletype|arraydeclaration
-declaration -> type identifier ;
-assignmentstmt -> identifier <- expression ;
-expression -> expression + term |expression - term|term
-term  ->  term*factor | term / factor |factor
-factor ->  ( expression )| identifier | constant
+declaration -> type$id$;
+assignmentstmt -> id$<-$expression$;
+expression -> expression$+$term |expression$-$term|term
+term  ->  term$*$factor | term$/$factor |factor
+factor ->  ($expression$)| id | constant
 constant -> intconst|stringconst
-iostmt -> in identifier; | out identifier;|out constant  ;
-condition -> (expression relation expression) | not ( expression   )
+condition -> ($expression$relation$expression$) | not$($expression$)
 relation ->  =|<>|>=|<=|and|or
-ifstmt -> if condition : statementlist end_if|if condition : statementlist else statementlist end_if
-whilestmt -> while condition : statementlist end_while
-forstmt -> for assignmentstmt , identifier , constant : statementlist   end_for
+ifstmt -> if$condition$:$statementlist$end_if|if$condition$:$statementlist$else$statementlist$end_if
+whilestmt -> while$condition$:$statementlist$end_while
+forstmt -> for$assignmentstmt$,$id$,$constant$:$statementlist$end_for
 simplestatement -> declaration |iostmt |assignmentstmt
 statement -> simplestatement|ifstmt|whilestmt|forstmt
-statementlist -> statement |statement statementlist
-program -> begin : statementlist  end
+statementlist -> statement |statement$statementlist
+program -> begin$:$statementlist$end

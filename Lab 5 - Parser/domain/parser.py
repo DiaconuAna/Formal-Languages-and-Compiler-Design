@@ -5,7 +5,7 @@ from domain.parserOutput import ParserOutput
 
 
 class Parser:
-    def __init__(self, grammar):
+    def __init__(self, grammar, out_file, in_file):
         """
         working stack: working stack alpha which stores the way the parse is built
         input_stack: input stack beta which is a part of the tree to be built
@@ -23,6 +23,31 @@ class Parser:
         self._state = "q"
         self._index = 0
         self._tree = []
+        self._out_file = out_file
+        self._sequence = []
+        print("Sequence to be parsed: ", self._sequence)
+        self.read_sequence(in_file)
+        file = open(self._out_file, 'w')
+        file.write("")
+        file.close()
+
+    def read_sequence(self, sequence_file):
+        with open(sequence_file) as file:
+            if sequence_file == "PIF.out":
+                line = file.readline()
+                while line:
+                    elems_line = line.split("'")
+                    self._sequence.append(elems_line[1])
+                    line = file.readline()
+            else:
+                line = file.readline()
+                while line:
+                    self._sequence.append(line[0:-1])
+                    line = file.readline()
+        return
+
+    def writeToFile(self):
+        pass
 
     def getTree(self):
         return self._tree
@@ -59,19 +84,34 @@ class Parser:
         print('Input stack: {}\n'.format(self._input_stack))
         print('**************')
 
+    def printCurrentConfigurationToFile(self):
+        with open(self._out_file, 'a') as file:
+            file.write("\n--------------\n")
+            file.write('State: ' + str(self._state) + " ")
+            file.write('Index: ' + str(self._index) + "\n")
+            file.write('Working stack: ' + str(self._working_stack) + "\n")
+            file.write('Input stack: ' + str(self._input_stack) + "\n")
+
+    def write_in_output_file(self, message, final=False):
+        with open(self._out_file, 'a') as file:
+            if final:
+                file.write("Sequence " + str(message) + " is accepted!\n")
+            else:
+                file.write(message)
+
     def parsingStrategy(self, w):
         """
         Parse a sequence using descendent recursive parsing
         :param w: sequence to be parsed
         :return:
         """
-        w = w.split(' ')
+        print("SEQUENCE:   ", self._sequence)
+        # w = w.split(' ')
+        w = self._sequence
         while self._state != 'f' and self._state != 'e':
-            self.printCurrentConfiguration()
-            if self._index < len(w):
-                print("&&&&", w[self._index])
+            # self.printCurrentConfiguration()
+            self.printCurrentConfigurationToFile()
             if self._state == 'q':
-                # print("*********** {}".format(w[self._index-1]))
                 # if i = n+1 and input stack is empty => success
                 if self._index == len(w) and len(self._input_stack) == 0:
                     self.success()
@@ -97,6 +137,7 @@ class Parser:
         else:
             print('Sequence {} is accepted!'.format(w))
             print(self._working_stack)
+            self.write_in_output_file(self._working_stack, True)
         self.createParsingTree()
 
     def expand(self):
@@ -116,11 +157,10 @@ class Parser:
         :return:
         """
         print('>>> expand ')
+        self.write_in_output_file('expand\n', False)
         nonTerminal = self._input_stack.pop(0)  # step 1
-        print("????", nonTerminal)
         # production = self._grammar.getProductions(nonTerminal[0])[0]  # step 3
         production = self._grammar.getProductions(nonTerminal)[0]  # step 3
-        print('*****', production)
         self._working_stack.append((nonTerminal, production[1]))  # step 2
         production_elems = production[0].split('$')
         # self._input_stack = list(production[0]) + self._input_stack  # step 4
@@ -138,7 +178,7 @@ class Parser:
         3. increase index i
         :return:
         """
-        print('>>> advance')
+        self.write_in_output_file('advance\n', False)
         nonTerminal = self._input_stack.pop(0)
         self._working_stack.append(nonTerminal)  # step 2
         self._index += 1  # step 3
@@ -153,7 +193,7 @@ class Parser:
         1.State becomes back.
         :return:
         """
-        print('>>> momentary insuccess')
+        self.write_in_output_file('momentary insuccess\n', False)
         self._state = "b"  # step 1
 
     def back(self):
@@ -168,7 +208,7 @@ class Parser:
         3. decrease index
         :return:
         """
-        print('>>> back')
+        self.write_in_output_file('back\n', False)
         last = self._working_stack.pop()  # step 1
         self._input_stack = [last] + self._input_stack  # step 2
         self._index -= 1  # step 3
@@ -197,13 +237,15 @@ class Parser:
 
         :return:
         """
-        print('>>> another try')
+        self.write_in_output_file('another try\n', False)
         last = self._working_stack.pop()  # step 1
         # step 2
         if self._grammar.existsNextProduction(last[0], last[1]):
             self._state = "q"  # step 2.1
             self._working_stack.append((last[0], last[1] + 1))  # step 2.2
-            lastLength = len(self._grammar.getProduction(last[0], last[1]))  # step 2.3
+            # lastLength = len(self._grammar.getProduction(last[0], last[1]))  # step 2.3
+            production_elems = self._grammar.getProduction(last[0], last[1])
+            lastLength = len(production_elems[0].split('$'))
             self._input_stack = self._input_stack[lastLength:]  # step 2.4
             production_elems = self._grammar.getProduction(last[0], last[1] + 1)[0]
             # self._input_stack = list(self._grammar.getProduction(last[0], last[1] + 1)[0]) + self._input_stack  # step 2.5
@@ -211,7 +253,12 @@ class Parser:
         elif self._index == 0 and last[0] == self._grammar.getStartingSymbol():  # step 3
             self._state = "e"
         else:  # step 4
-            lastLength = len(self._grammar.getProduction(last[0], last[1]))
+            production_elems = self._grammar.getProduction(last[0], last[1])
+            lastLength = len(production_elems[0].split('$'))
+            self.write_in_output_file("\nproduction : " + str(production_elems) + '**\n')
+            self.write_in_output_file("\nlast length : " + str(lastLength) + '\n')
+            # self._input_stack = self._input_stack[lastLength:]
+
             self._input_stack = self._input_stack[lastLength:]
             self._input_stack = [last[0]] + self._input_stack
 
@@ -224,7 +271,7 @@ class Parser:
         1. Mark the state as final
         :return:
         """
-        print('>>> success')
+        self.write_in_output_file('success\n', False)
         self._state = "f"  # step 1
 
     def createParsingTree(self):
