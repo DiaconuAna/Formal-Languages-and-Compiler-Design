@@ -1,0 +1,17 @@
+begin:
+number a;
+number b;
+number c;
+number min;
+in a;
+in b;
+in c;
+min <- a;
+if (b < min):
+min <- b;
+end_if
+if (c < min):
+min <- c;
+end_if
+out min;
+end
