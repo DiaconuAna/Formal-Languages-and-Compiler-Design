@@ -23,7 +23,7 @@ Identifier: div
 Operator: mod
 Identifier: a
 Operator: =
-Illegal integer at line
+Constant: 0
 Separator: :
 Reserved word: out
 Identifier: div

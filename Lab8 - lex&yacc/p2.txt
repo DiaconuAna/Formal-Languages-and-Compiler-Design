@@ -4,6 +4,8 @@ begin:
 	
 	in a;
 
+
+
 	for div<-1,a,1:
 		if div mod a = 0:
 			out div;
