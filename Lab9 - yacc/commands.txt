@@ -1,0 +1,4 @@
+flex lang2.lxi
+bison -d lang.y
+gcc lang.tab.c lex.yy.c -o yacc_lab
+yacc_lab.exe < p1.txt > p1_out.txt
