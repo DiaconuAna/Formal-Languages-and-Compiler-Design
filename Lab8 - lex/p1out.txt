@@ -1,0 +1,55 @@
+Reserved word: begin
+Separator: :
+Reserved word: number
+Identifier: a
+Separator: ;
+Reserved word: number
+Identifier: b
+Separator: ;
+Reserved word: number
+Identifier: c
+Separator: ;
+Reserved word: number
+Identifier: min
+Separator: ;
+Reserved word: in
+Identifier: a
+Separator: ;
+Reserved word: in
+Identifier: b
+Separator: ;
+Reserved word: in
+Identifier: c
+Separator: ;
+Identifier: min
+Assignment Operator: <-
+Identifier: a
+Separator: ;
+Reserved word: if
+Separator: (
+Identifier: b
+Operator: <
+Identifier: min
+Separator: )
+Separator: :
+Identifier: min
+Assignment Operator: <-
+Identifier: b
+Separator: ;
+Reserved word: end_if
+Reserved word: if
+Separator: (
+Identifier: c
+Operator: <
+Identifier: min
+Separator: )
+Separator: :
+Identifier: min
+Assignment Operator: <-
+Identifier: c
+Separator: ;
+Reserved word: end_if
+Reserved word: out
+Identifier: min
+Separator: ;
+Reserved word: end

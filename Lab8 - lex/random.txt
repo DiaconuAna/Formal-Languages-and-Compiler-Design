@@ -1,0 +1,17 @@
+begin:
+	number sum;
+	number n;
+	number x;
+	number i;
+
+	sum <- 0;
+	
+	in n;
+
+	for i<-1,n,1:
+		in x;
+		sum <- sum + x;
+	end_for
+	
+	out sum;
+end
