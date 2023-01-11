@@ -1,0 +1,3 @@
+flex lang.lxi
+gcc lex.yy.c -o lex_only
+lex_only.exe < p1.txt > p1_out.txt
