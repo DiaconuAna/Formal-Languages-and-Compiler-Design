@@ -1,0 +1,44 @@
+Reserved word: begin
+Separator: :
+Reserved word: number
+Identifier: sum
+Separator: ;
+Reserved word: number
+Identifier: n
+Separator: ;
+Reserved word: number
+Identifier: x
+Separator: ;
+Reserved word: number
+Identifier: i
+Separator: ;
+Identifier: sum
+Assignment Operator: <-
+Constant: 0
+Separator: ;
+Reserved word: in
+Identifier: n
+Separator: ;
+Reserved word: for
+Identifier: i
+Assignment Operator: <-
+Constant: 1
+Separator: ,
+Identifier: n
+Separator: ,
+Constant: 1
+Separator: :
+Reserved word: in
+Identifier: x
+Separator: ;
+Identifier: sum
+Assignment Operator: <-
+Identifier: sum
+Operator: +
+Identifier: x
+Separator: ;
+Reserved word: end_for
+Reserved word: out
+Identifier: sum
+Separator: ;
+Reserved word: end

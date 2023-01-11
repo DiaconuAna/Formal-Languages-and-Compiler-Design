@@ -1,0 +1,35 @@
+Reserved word: begin
+Separator: :
+Reserved word: number
+Identifier: b
+Separator: ;
+Reserved word: number
+Identifier: div
+Separator: ;
+Reserved word: in
+Identifier: a
+Separator: ;
+Reserved word: for
+Identifier: div
+Assignment Operator: <-
+Constant: 1
+Separator: ,
+Identifier: a
+Separator: ,
+Constant: 1
+Separator: :
+Reserved word: if
+Separator: (
+Identifier: div
+Operator: mod
+Identifier: a
+Operator: =
+Constant: 0
+Separator: )
+Separator: :
+Reserved word: out
+Identifier: div
+Separator: ;
+Reserved word: end_if
+Reserved word: end_for
+Reserved word: end
